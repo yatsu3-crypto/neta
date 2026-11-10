@@ -1,0 +1,215 @@
+<title>笑いのネタ帳</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* 和紙の帳面：上に3原則の札、下にネタの短冊が並ぶ一列レイアウト */
+:root{
+  --bg:#f6f2e9; --paper:#fffdf8; --ink:#2b2620; --sub:#6f665a; --line:#e3dacb;
+  --shu:#c8452f; --ai:#2f4f7a; --matsu:#3e6b4a; --kincha:#a7792c;
+  --serif:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --sans:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1c1a17; --paper:#26231f; --ink:#ece5d8; --sub:#a89e8f; --line:#3a352e;
+  --shu:#e2694f; --ai:#7f9fcc; --matsu:#7fab88; --kincha:#d0a258; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1c1a17; --paper:#26231f; --ink:#ece5d8; --sub:#a89e8f; --line:#3a352e;
+  --shu:#e2694f; --ai:#7f9fcc; --matsu:#7fab88; --kincha:#d0a258; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7}
+.wrap{max-width:560px;margin:0 auto;padding-block:20px 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-family:var(--serif);font-size:28px;margin:0;letter-spacing:.08em}
+.lead{color:var(--sub);font-size:13px;margin:2px 0 18px}
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.p-card{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:6px;padding:10px 8px;text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
+.p-card[aria-pressed="true"]{background:color-mix(in srgb,var(--c) 12%,var(--paper))}
+.p-card b{font-family:var(--serif);font-size:16px;color:var(--c)}
+.p-card small{color:var(--sub);font-size:11px;line-height:1.4}
+.p-card .n{font-size:20px;font-variant-numeric:tabular-nums;font-weight:700}
+.help{margin:12px 0 4px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px 14px;font-size:13.5px}
+.help h2{font-family:var(--serif);font-size:16px;margin:0 0 4px;color:var(--c)}
+.help ul{margin:6px 0 0;padding-left:1.2em}
+.bar{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 8px}
+.bar h3{font-family:var(--serif);font-size:17px;margin:0}
+.bar span{color:var(--sub);font-size:12px}
+.list{display:flex;flex-direction:column;gap:10px}
+.ep{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:4px;padding:12px 14px}
+.ep-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tag{font-size:11px;color:#fff;background:var(--c);padding:1px 8px;border-radius:2px;letter-spacing:.05em}
+.ex{font-size:11px;color:var(--sub);border:1px solid var(--line);padding:0 6px;border-radius:2px}
+.ep-t{font-family:var(--serif);font-weight:700;font-size:16px;margin:4px 0 6px}
+.row{display:grid;grid-template-columns:3em 1fr;gap:6px;font-size:14px}
+.row dt{color:var(--sub);font-size:12px;padding-top:2px}
+.row dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.row dd.ochi{font-weight:700}
+.meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;color:var(--sub)}
+.stars{color:var(--kincha);letter-spacing:2px}
+.lnk{background:none;border:0;color:var(--sub);font:inherit;font-size:12px;cursor:pointer;padding:4px 6px}
+.lnk.danger{color:var(--shu)}
+.empty{text-align:center;color:var(--sub);padding:28px 10px;border:1px dashed var(--line);border-radius:6px}
+.fab{position:fixed;right:max(18px,calc(env(safe-area-inset-right,0px) + 18px));bottom:calc(env(safe-area-inset-bottom,0px) + 18px);background:var(--shu);color:#fff;border:0;border-radius:28px;padding:14px 22px;font:inherit;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer}
+.sheet{position:fixed;inset:0;background:rgba(20,16,12,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet>form,.sheet>div{background:var(--paper);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:14px 14px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 18px) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.sheet h3{font-family:var(--serif);margin:0;font-size:18px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--sub)}
+input,textarea,select{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px;width:100%}
+textarea{min-height:72px;resize:vertical}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg button{font:inherit;font-size:14px;padding:9px 4px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--c);color:#fff;border-color:var(--c)}
+.hint{font-size:12.5px;color:var(--sub);background:var(--bg);border-radius:6px;padding:8px 10px;margin:0}
+.btns{display:flex;gap:8px;justify-content:flex-end}
+.btn{font:inherit;font-weight:700;border-radius:6px;padding:10px 18px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.btn.pri{background:var(--ai);border-color:var(--ai);color:#fff}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--kincha);outline-offset:2px}
+.foot{margin-top:28px;display:flex;gap:4px;justify-content:center}
+@media (max-width:380px){.p-card small{display:none}}
+</style>
+
+<div class="wrap">
+  <h1>笑いのネタ帳</h1>
+  <p class="lead">日常の「ちょっと笑えた」を、3つの原則で仕分けて貯める</p>
+
+  <div class="p-grid" id="pgrid"></div>
+  <div class="help" id="help"></div>
+
+  <div class="bar"><h3 id="listTitle">すべてのネタ</h3><span id="count"></span></div>
+  <div class="list" id="list"></div>
+
+  <div class="foot">
+    <button class="lnk" id="exportBtn" type="button">バックアップを書き出す</button>
+    <button class="lnk" id="importBtn" type="button">バックアップを読み込む</button>
+  </div>
+</div>
+
+<button class="fab" id="addBtn" type="button">＋ ネタを書く</button>
+
+<div class="sheet" id="sheet" hidden>
+  <form id="form">
+    <h3 id="formTitle">ネタを書く</h3>
+    <div>
+      <div style="font-size:13px;color:var(--sub);margin-bottom:4px">どの原則？</div>
+      <div class="seg" id="seg"></div>
+    </div>
+    <p class="hint" id="segHint"></p>
+    <label>見出し<input id="f-title" required maxlength="60" placeholder="例：老眼鏡はどこへ"></label>
+    <label>フリ（状況・期待・緊張）<textarea id="f-furi" required placeholder="何が起きる前で、みんなは何を予想していた？"></textarea></label>
+    <label>オチ（外れ・解け・失敗）<textarea id="f-ochi" required placeholder="実際どうなった？ ここを一言で言えると強い"></textarea></label>
+    <label>場面<input id="f-place" list="places" placeholder="家庭・診察室・スタッフ・学会 など"></label>
+    <datalist id="places"><option value="家庭"><option value="診察室"><option value="スタッフ"><option value="学会"><option value="友人"></datalist>
+    <label>手応え
+      <select id="f-score"><option value="0">まだ話していない</option><option value="1">★ 小さくウケた</option><option value="2">★★ ウケた</option><option value="3">★★★ 大ウケ</option></select>
+    </label>
+    <div class="btns"><button class="btn" type="button" id="cancel">やめる</button><button class="btn pri" type="submit">保存</button></div>
+  </form>
+</div>
+
+<div class="sheet" id="io" hidden>
+  <div>
+    <h3 id="ioTitle"></h3>
+    <p class="hint" id="ioHint"></p>
+    <textarea id="ioText" style="min-height:180px;font-size:13px"></textarea>
+    <p class="hint" id="ioMsg" hidden></p>
+    <div class="btns"><button class="btn" type="button" id="ioClose">閉じる</button><button class="btn pri" type="button" id="ioGo"></button></div>
+  </div>
+</div>
+
+<script>
+const P = {
+  zure:{name:'ズレ', short:'予想を裏切る', c:'var(--shu)',
+    desc:'聞き手が「こう来るだろう」と思った先とは違う所に着地すると笑いが起きる。',
+    checks:['返事や行動が、質問や状況と微妙に噛み合っていない','言い間違い・聞き間違い・勘違い','場違いなほど真面目、または場違いなほど軽い'],
+    tip:'フリで「普通はこうなる」をはっきり見せるほど、オチのズレが効きます。'},
+  kanwa:{name:'緊張と緩和', short:'張った空気が解ける', c:'var(--ai)',
+    desc:'張り詰めた空気が、ふっと拍子抜けする形で解けた瞬間に笑いが起きる。',
+    checks:['厳かな場・真剣な場面で起きたこと','「重大な話」の中身が小さかった','怒られる・怖いと思ったら違った'],
+    tip:'フリは重く、オチは軽く。緊張の高さがそのまま笑いの大きさになります。'},
+  jigyaku:{name:'自虐・失敗', short:'安心して笑える失敗', c:'var(--matsu)',
+    desc:'人のドジは笑えるが、他人をけなすと冷える。自分の失敗として出すと相手が安心して笑える。',
+    checks:['自分がやらかした・うっかりした','肩書きや年齢とのギャップがある失敗','誰も傷つかない（他人の失敗なら本人がもう笑っている）'],
+    tip:'失敗の後の「自分のツッコミ」を一言添えると、聞き手が笑ってよい合図になります。'}
+};
+const KEY='warai-neta-v1';
+const SAMPLE=[
+  {id:'s1',ex:true,p:'zure',title:'宿題の存在',furi:'子どもに「宿題終わった？」と聞いた。',ochi:'「宿題があることは確認した」と返ってきた。',place:'家庭',score:2,date:'2026-11-01'},
+  {id:'s2',ex:true,p:'kanwa',title:'朝礼の重大発表',furi:'朝礼で院長が改まって「今日は大事なお知らせがあります」。スタッフ全員が身構える。',ochi:'「自販機に新しいお茶が入りました」',place:'スタッフ',score:3,date:'2026-11-03'},
+  {id:'s3',ex:true,p:'jigyaku',title:'老眼鏡はどこへ',furi:'診察前に老眼鏡が見当たらず、院内を一周して探した。',ochi:'頭の上に乗っていた。看護師さんは最初から気づいていた。',place:'診察室',score:2,date:'2026-11-06'}
+];
+let eps=load(), filter='all', editing=null, pick='zure';
+
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return SAMPLE.slice()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(eps))}catch(e){}}
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function renderGrid(){
+  $('pgrid').innerHTML=Object.entries(P).map(([k,v])=>{
+    const n=eps.filter(e=>e.p===k).length;
+    return `<button type="button" class="p-card" style="--c:${v.c}" data-k="${k}" aria-pressed="${filter===k}">
+      <b>${v.name}</b><small>${v.short}</small><span class="n">${n}</span></button>`}).join('');
+  $('pgrid').querySelectorAll('.p-card').forEach(b=>b.onclick=()=>{filter=filter===b.dataset.k?'all':b.dataset.k;render()});
+}
+function renderHelp(){
+  const h=$('help');
+  if(filter==='all'){h.style.setProperty('--c','var(--kincha)');
+    h.innerHTML=`<h2>3原則に共通する型</h2>どれも<b>フリ</b>（期待や緊張をつくる）→<b>オチ</b>（それを外す・解く）の二段構え。ネタはこの2つに分けて書くと、そのまま話せる形になります。上の札を押すと原則ごとの見分け方が出ます。`;return}
+  const v=P[filter];h.style.setProperty('--c',v.c);
+  h.innerHTML=`<h2>${v.name}</h2>${v.desc}<ul>${v.checks.map(c=>`<li>${c}</li>`).join('')}</ul><p style="margin:8px 0 0;color:var(--sub)">${v.tip}</p>`;
+}
+function renderList(){
+  const arr=eps.filter(e=>filter==='all'||e.p===filter).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  $('listTitle').textContent=filter==='all'?'すべてのネタ':P[filter].name+'のネタ';
+  $('count').textContent=arr.length+'件';
+  if(!arr.length){$('list').innerHTML=`<div class="empty">まだありません。右下の「＋ ネタを書く」から。</div>`;return}
+  $('list').innerHTML=arr.map(e=>{const v=P[e.p];return `
+  <article class="ep" style="--c:${v.c}">
+    <div class="ep-h"><span class="tag">${v.name}</span>${e.place?`<span style="font-size:12px;color:var(--sub)">${esc(e.place)}</span>`:''}${e.ex?'<span class="ex">例</span>':''}</div>
+    <div class="ep-t">${esc(e.title)}</div>
+    <dl class="row"><dt>フリ</dt><dd>${esc(e.furi)}</dd><dt>オチ</dt><dd class="ochi">${esc(e.ochi)}</dd></dl>
+    <div class="meta"><span>${esc(e.date||'')}　<span class="stars">${'★'.repeat(e.score||0)}</span></span>
+      <span><button class="lnk" data-edit="${e.id}">直す</button><button class="lnk danger" data-del="${e.id}">消す</button></span></div>
+  </article>`}).join('');
+  $('list').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openForm(b.dataset.edit));
+  $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    if(b.dataset.armed){eps=eps.filter(e=>e.id!==b.dataset.del);save();render()}
+    else{b.dataset.armed=1;b.textContent='本当に消す';setTimeout(()=>{if(b.isConnected){delete b.dataset.armed;b.textContent='消す'}},3000)}});
+}
+function render(){renderGrid();renderHelp();renderList()}
+
+function renderSeg(){
+  $('seg').innerHTML=Object.entries(P).map(([k,v])=>`<button type="button" style="--c:${v.c}" data-k="${k}" aria-pressed="${pick===k}">${v.name}</button>`).join('');
+  $('seg').querySelectorAll('button').forEach(b=>b.onclick=()=>{pick=b.dataset.k;renderSeg()});
+  $('segHint').textContent=P[pick].tip;
+}
+function openForm(id){
+  editing=id||null;const e=eps.find(x=>x.id===id);
+  pick=e?e.p:(filter!=='all'?filter:'zure');
+  $('formTitle').textContent=e?'ネタを直す':'ネタを書く';
+  $('f-title').value=e?.title||'';$('f-furi').value=e?.furi||'';$('f-ochi').value=e?.ochi||'';
+  $('f-place').value=e?.place||'';$('f-score').value=e?.score||0;
+  renderSeg();$('sheet').hidden=false;$('f-title').focus();
+}
+$('addBtn').onclick=()=>openForm();
+$('cancel').onclick=()=>$('sheet').hidden=true;
+$('sheet').onclick=ev=>{if(ev.target.id==='sheet')$('sheet').hidden=true};
+$('form').onsubmit=ev=>{ev.preventDefault();
+  const d={p:pick,title:$('f-title').value.trim(),furi:$('f-furi').value.trim(),ochi:$('f-ochi').value.trim(),place:$('f-place').value.trim(),score:+$('f-score').value};
+  if(editing){const e=eps.find(x=>x.id===editing);Object.assign(e,d);delete e.ex}
+  else eps.push({id:Date.now().toString(36),date:new Date().toLocaleDateString('sv-SE'),...d});
+  save();$('sheet').hidden=true;render();
+};
+
+let ioMode='';
+function openIO(mode){ioMode=mode;$('ioMsg').hidden=true;
+  if(mode==='export'){$('ioTitle').textContent='バックアップを書き出す';$('ioHint').textContent='下の文字列をメモ帳などに貼って保管してください。';$('ioText').value=JSON.stringify(eps);$('ioGo').textContent='コピー'}
+  else{$('ioTitle').textContent='バックアップを読み込む';$('ioHint').textContent='書き出した文字列を貼り付けてください。いまのネタは置き換わります。';$('ioText').value='';$('ioGo').textContent='読み込む'}
+  $('io').hidden=false}
+$('exportBtn').onclick=()=>openIO('export');
+$('importBtn').onclick=()=>openIO('import');
+$('ioClose').onclick=()=>$('io').hidden=true;
+$('ioGo').onclick=()=>{const m=$('ioMsg');m.hidden=false;
+  if(ioMode==='export'){navigator.clipboard.writeText($('ioText').value).then(()=>m.textContent='コピーしました。').catch(()=>{$('ioText').select();m.textContent='選択しました。長押しでコピーしてください。'})}
+  else{try{const a=JSON.parse($('ioText').value);if(!Array.isArray(a))throw 0;eps=a;save();render();m.textContent=a.length+'件を読み込みました。'}catch(e){m.textContent='読み込めませんでした。書き出した文字列をそのまま貼ってください。'}}
+};
+render();
+</script>
